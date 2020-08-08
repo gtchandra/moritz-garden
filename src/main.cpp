@@ -31,70 +31,21 @@ void setup() {
     pinMode(A2,INPUT);
     pinMode(D2,OUTPUT);
     pinMode(D3,INPUT_PULLUP);
-    digitalWrite(D2,HIGH);
+    //start watering immediately once turned on setting D2 to low
+    digitalWrite(D2,LOW);
     Serial.begin(9600);
-    Serial.println("Hello Moritz! ver.2.0 interrupt enabled");
+    Serial.println("Hello Moritz! Watering is active...");
     numWatering=0;
     checkDay=0;
     checkTime=0;
-    attachInterrupt(digitalPinToInterrupt(D3), water_button_pressed, CHANGE);
     startWatering=0;
-}
-void water_button_pressed() {
-  if (digitalRead(D3)==0) {
-     startWatering=1;
-     digitalWrite(LED_BUILTIN,1);
-    }
 }
 
 void loop() {
- 
-  if ((millis()-checkDay)>day) {
-    checkDay=millis();
-    numWatering=0;
-    watering=0;
-    Serial.println("It's a new day in Wolkenheim...");
+  if ((millis()-fifteenMin)>0) {
+    digitalWrite(D2,HIGH);
+    Serial.println("Stop watering after 15 min");
+    delay(900000);
   }
- 
-  if ((millis()-checkTime)>thirtyMin) {
-      Serial.println("check");
-      //soil1=analogRead(A0);
-      //soil3=analogRead(A1);
-      //soil2=analogRead(A2);
-      //int hum1=1024-soil1;
-      //Serial.println(hum1);
-      //int hum2=1024-soil2;
-      //int hum3=1024-soil3;
-      //if ((hum1<450)or(hum2<450)or(hum3<450)) {
-      //if (hum1<135) {
-      //  Serial.println("dry soil found:");
-      //  Serial.println(hum1);        
-      watering=1;
-      //}
-      //Serial.print(hum1);
-      //Serial.print("--");
-      //Serial.print(hum2);
-      //Serial.print("--");
-      //Serial.println(hum3);
-      checkTime=millis();
-    }
-    if((watering && (numWatering<maxwateringSessions))||startWatering) {
 
-      if (startWatering>0) {
-       Serial.println("button pressed...");
-       Serial.println(startWatering);
-       startWatering=0;
-       delay(2000);
-       digitalWrite(LED_BUILTIN,0);
-       }
-      //turn on the TAP
-      digitalWrite(D2,LOW);
-      Serial.println("Watering ACTIVE!");
-      //delay for 5 mins
-      delay(fiveMin);
-      digitalWrite(D2,HIGH);
-      numWatering++;  //increase watering session counter
-      watering=0; //reset watering
-      startWatering=0; //reset interrupt variable once again :(
-    }
 }
