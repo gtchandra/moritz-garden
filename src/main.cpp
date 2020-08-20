@@ -42,6 +42,11 @@ void setup() {
 }
 
 void loop() {
+  if ((millis()-2000)>0) {
+    //just to make sure that in the main loop for the first 2 seconds Arduino set D2 to LOW
+    //that should turn the water on
+    digitalWrite(D2,LOW);
+  }
   if ((millis()-fifteenMin)>0) {
     digitalWrite(D2,HIGH);
     Serial.println("Stop watering after 15 min");
